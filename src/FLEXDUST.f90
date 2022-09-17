@@ -437,8 +437,9 @@ program FLEXDUST
                                     !*****************************
                                     call dustEmmission_Kok14(emission_mass_step(ix,iy), soilFraction(ix,iy), &
                                     lat_out, dx_dy_out, inNestNr(ix,iy),  ix_wind(ix), iy_wind(iy), &
-                                    ix_wind_n(ix,inNestNr(ix,iy)), iy_wind_n(iy,inNestNr(ix,iy)),emission_time, &
-                                    frictVelThres, inClayGrid(ix,iy), clayContent(ix_clay(ix),iy_clay(iy)))
+                                    ix_wind_n(ix,inNestNr(ix,iy)), iy_wind_n(iy,inNestNr(ix,iy)),emission_time, scalingFactor, &
+                                    frictVelThres, inClayGrid(ix,iy), clayContent(ix_clay(ix),iy_clay(iy)), & 
+                                    emission_flux_step(ix,iy), gridarea(ix,iy))
                                 endif
                                 !*****************************
                             endif!emission model with varying threshold
