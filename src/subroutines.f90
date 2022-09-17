@@ -110,7 +110,7 @@ subroutine netCDF_prepareEmission(grid_filename, lons, lats)
      integer      :: nc_id, status
      !from flexpart ctm
      integer :: londim_id, latdim_id, timedim_id,lonvar_id, latvar_id, timevar_id,emitvar_id
-     integer :: soil_id, area_id,tot_em_id,time_s_dim_id
+     integer :: soil_id,area_id,clay_id,sand_id,tot_em_id,time_s_dim_id,erodibility_id
      integer :: singdim_id, hourvar_id,dayvar_id
      !Some vars for standard netcdf example
      real, dimension(0:nx_lon_out-1) :: lons
@@ -137,6 +137,9 @@ subroutine netCDF_prepareEmission(grid_filename, lons, lats)
      call check(nf90_def_var(nc_id, "cum_emission", nf90_float, (/londim_id,latdim_id/), tot_em_id))
      call check(nf90_def_var(nc_id, "soil", nf90_float, (/londim_id,latdim_id/), soil_id))
      call check(nf90_def_var(nc_id, "area", nf90_float, (/londim_id,latdim_id/), area_id))
+     call check(nf90_def_var(nc_id, "clay", nf90_float, (/londim_id,latdim_id/), clay_id))
+     call check(nf90_def_var(nc_id, "sand", nf90_float, (/londim_id,latdim_id/), sand_id))
+     call check(nf90_def_var(nc_id, "erodibility", nf90_float, (/londim_id,latdim_id/), erodibility_id))
 
     !Attributes
     call check(NF90_PUT_ATT(nc_id, lonvar_id, "units", "degrees"))
@@ -154,7 +157,10 @@ subroutine netCDF_prepareEmission(grid_filename, lons, lats)
     call check(NF90_PUT_ATT(nc_id, soil_id, "standard_name", "Bare soil fraction"))
     call check(NF90_PUT_ATT(nc_id, area_id, "standard_name", "Area grid box"))
     call check(NF90_PUT_ATT(nc_id, area_id, "units", "m2"))
+    call check(NF90_PUT_ATT(nc_id, clay_id, "standard_name", "sand map"))
+    call check(NF90_PUT_ATT(nc_id, sand_id, "standard_name", "clay map"))
     call check(NF90_PUT_ATT(nc_id, dayvar_id, "standard_name", "Startdate of simulation"))
+    call check(NF90_PUT_ATT(nc_id, erodibility_id, "standard_name", "erodibility"))
 
     !Finished defining
      call check( nf90_enddef(nc_id) )
