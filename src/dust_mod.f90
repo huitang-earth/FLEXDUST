@@ -94,14 +94,14 @@ module dust_mod
     !***********************************************************************
     integer, parameter         :: landuse_file_type=2               !1>same as flexpart 2>MODIS
     logical, parameter         :: landuse_binary=.true.             !Is the landuse file already converted from ASCII to binary file?
-    character(*), parameter    :: landuse_file= '../INPUT/landcover_GLCNMO_l.bin'
+    character(*), parameter    :: landuse_file= '/cluster/projects/nn2806k/huit/flexpart/INPUT/GLCNMO_v3.bin'
     integer, parameter         :: nx_landuse=86400, ny_landuse=43200 !Size landuse file
     real, parameter            :: dxdy_degr_landuse=15./3600.        !Resolution landuse file
     !***********************************************************************
     
     !Nested landuse file and properties
     !***********************************************************************
-    integer, parameter         :: numbnests_landuse=1   !Developed and tested for only 1 nested field (sandy deserts Iceland or Antarctic), 
+    integer, parameter         :: numbnests_landuse=0   !Developed and tested for only 1 nested field (sandy deserts Iceland or Antarctic), 
                                                         !requires further changes in the source code if other fields are used! 
                                                         !(Adjust code for bare land and possibly soil fraction calculation.)
     
