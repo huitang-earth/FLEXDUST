@@ -67,7 +67,8 @@ dustEmission_MB95_tau.o\
 dustEmission_Kok14.o \
 gridcheck_nests.o \
 calcThreshold.o \
-calcThreshold_tau.o
+calcThreshold_tau.o \
+readcommand.o
 
 
 

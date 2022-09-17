@@ -66,6 +66,9 @@ program FLEXDUST
     
     !Set some variables used in the code to read files copied from FLEXPART
     !*************************************************************************************************
+    call readcommand
+    write(*,*) 'Reading Namelist Complete' 
+    
     numbnests           = numberOfNests   
     ldirect				= 1
     path(4) 			= ECMWF_input
@@ -76,6 +79,8 @@ program FLEXDUST
     start_date_available            = start_date	
     end_date			= start_date+releaseDays
     ideltas				= nint((end_date-start_date)*86400.)
+    nc_file_out         = trim(output_directory)//trim(nc_file_name)
+    summary_file    = trim(output_directory)//trim(summary_file_name)
     !*************************************************************************************************
 
     !Save settings dust_mod to output

@@ -1,0 +1,16 @@
+&COMMAND_FLEXDUST
+ start_date_hour=000000,
+ start_date_day=20210301,
+ time_step= 1,
+ releaseDays=31,
+ output_directory  ='/cluster/work/users/huit/flexdust_default/2021/03/',
+ lat_bottom        = 20,    
+ lon_left          = 40,    
+ dx_dy_out         = 0.1,   
+ release_dxdy_step = 1,
+ ny_lat_out        = 420,   
+ nx_lon_out        = 880,
+ release= 'RELEASES_FLEXDUST',
+ summary_file_name='Summary.txt',   
+ /
+
