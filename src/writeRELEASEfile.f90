@@ -182,7 +182,7 @@ subroutine writeRELEASEfile(filename, typeSizeDistr, particlesPerTonDust, Junge_
                 !Nr particles indication
                 estPart = max(1, min(1000, int(particlesPerTonDust * combEmission/1000.)))
 
-                call flush()
+                call flush(5)
                 if (estPart > 25)then
                     
                     !Loop through complete size distribution if there are many particles emitted (otherwise pick one size class)
@@ -224,8 +224,8 @@ subroutine writeRELEASEfile(filename, typeSizeDistr, particlesPerTonDust, Junge_
 
                         !write release info
                         !*************************************************
-                        write(releaseunit, '(I8 I07.6)') date_day, date_hour
-                        write(releaseunit, '(I8 I07.6)') date_day_next, date_hour_next
+                        write(releaseunit, '(I8, I07.6)') date_day, date_hour
+                        write(releaseunit, '(I8, I07.6)') date_day_next, date_hour_next
                         write(releaseunit, '(F9.4)') lon
                         write(releaseunit, '(F9.4)') lat
                         write(releaseunit, '(F9.4)') lon + real(dxdy_degr * release_dxdy_step)
@@ -247,7 +247,7 @@ subroutine writeRELEASEfile(filename, typeSizeDistr, particlesPerTonDust, Junge_
 
                         !Finish with name of this particular release
                         !*************************************************
-                        write(releaseunit, '(A14I8I06.6A1I0.4A8I3)') 'Dust_location_', &
+                        write(releaseunit, '(A14,I8,I06.6,A1,I0.4,A8,I3)') 'Dust_location_', &
                         date_day, date_hour, '_', nr, '_species', startSpecies + i
                         write(releaseunit, *) '-----------------------------'
                         nr = nr + 1
@@ -298,8 +298,8 @@ subroutine writeRELEASEfile(filename, typeSizeDistr, particlesPerTonDust, Junge_
 
                     !write release info
                     !*************************************************
-                    write(releaseunit, '(I8 I07.6)') date_day, date_hour
-                    write(releaseunit, '(I8 I07.6)') date_day_next, date_hour_next
+                    write(releaseunit, '(I8, I07.6)') date_day, date_hour
+                    write(releaseunit, '(I8, I07.6)') date_day_next, date_hour_next
                     write(releaseunit, '(F9.4)') lon
                     write(releaseunit, '(F9.4)') lat
                     write(releaseunit, '(F9.4)') lon + real(dxdy_degr * release_dxdy_step)
@@ -321,7 +321,7 @@ subroutine writeRELEASEfile(filename, typeSizeDistr, particlesPerTonDust, Junge_
 
                     !Finish with name of this particular release
                     !*************************************************
-                    write(releaseunit, '(A14I8I06.6A1I0.4A8I3)') 'Dust_location_', &
+                    write(releaseunit, '(A14,I8,I06.6,A1,I0.4,A8,I3)') 'Dust_location_', &
                     date_day, date_hour, '_', nr, '_species', startSpecies + current_species
                     write(releaseunit, *) '-----------------------------'
                     nr = nr + 1
