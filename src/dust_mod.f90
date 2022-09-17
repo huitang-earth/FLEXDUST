@@ -68,25 +68,25 @@ module dust_mod
     !***********************************************************************
    
     !properties of the clayContent & sand file
-    !***********************************************************************
+    !************************ src/dust_mod.f90***********************************************
 
-    !for default version
-    logical, parameter         :: ISRIC_soilmaps=.false.
-    character(*), parameter    :: clayFile= '../INPUT/Clay.srf'        !File with clay content
-    character(*), parameter    :: sandFile= '../INPUT/Sand.srf'        !File with sand content
-    real, parameter            :: dx_c= 0.0833, dy_c=0.0833         !Resolution sand/clay grids
-    real, parameter            :: xlon0_c= -180.00, ylat0_c=-56.50  !Lower left corner of clay/sand grids
-    integer,parameter          :: nx_c=4320 , ny_c=1686             !Size sand/clay grids
-    real, dimension(0:nx_c-1,0:ny_c-1) :: clayContent, sandContent  !Sand and clay should be equal grids!!!
-    
-    !for alternative ISRIC version, not validated
+    !for default version (old version based on soil types)
     !logical, parameter         :: ISRIC_soilmaps=.true.
-    !character(*), parameter    :: clayFile= '../INPUT/ISRIC_clay.bin'        !File with clay content
-    !character(*), parameter    :: sandFile= '../INPUT/ISRIC_sand.bin'        !File with sand content
-    !real, parameter            :: dx_c= 0.05, dy_c=0.05         !Resolution sand/clay grids
-    !real, parameter            :: xlon0_c= -180.0, ylat0_c=-55.98  !Lower left corner of clay/sand grids
-    !integer,parameter          :: nx_c=7200 , ny_c=2774             !Size sand/clay grids
+    !character(*), parameter    :: clayFile= '../INPUT/Clay.srf'        !File with clay content
+    !character(*), parameter    :: sandFile= '../INPUT/Sand.srf'        !File with sand content
+    !real, parameter            :: dx_c= 0.0833, dy_c=0.0833         !Resolution sand/clay grids
+    !real, parameter            :: xlon0_c= -180.00, ylat0_c=-56.50  !Lower left corner of clay/sand grids
+    !integer,parameter          :: nx_c=4320 , ny_c=1686             !Size sand/clay grids
     !real, dimension(0:nx_c-1,0:ny_c-1) :: clayContent, sandContent  !Sand and clay should be equal grids!!!
+    
+    !for alternative ISRIC version (new version, 3 min resolution), not validated
+    logical, parameter         :: ISRIC_soilmaps=.true.
+    character(*), parameter    :: clayFile= '../INPUT/ISRIC_clay.bin'        !File with clay content
+    character(*), parameter    :: sandFile= '../INPUT/ISRIC_sand.bin'        !File with sand content
+    real, parameter            :: dx_c= 0.05, dy_c=0.05         !Resolution sand/clay grids
+    real, parameter            :: xlon0_c= -180.0, ylat0_c=-55.98  !Lower left corner of clay/sand grids
+    integer,parameter          :: nx_c=7200 , ny_c=2774             !Size sand/clay grids
+    real, dimension(0:nx_c-1,0:ny_c-1) :: clayContent, sandContent  !Sand and clay should be equal grids!!!
 
     !***********************************************************************
     
