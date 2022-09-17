@@ -26,6 +26,37 @@ module dust_mod
     
     !Input files/settings
     !***********************************************************************
+    !output time frame
+    integer :: start_date_day, start_date_hour, time_step	  
+    real    :: releaseDays	      
+    !***********************************************************************
+    
+    !output grid
+    !***********************************************************************
+
+    character(len=256)   :: output_directory
+    real           :: lat_bottom
+    real           :: lon_left 
+    real           :: dx_dy_out   !resolution of emission calculation in degree, should be larger than resolution of global landuse file (15/3600)
+    integer        :: release_dxdy_step = 1    !Interval of x and y in which release file should be written 
+                                                            !(2 means that calculated emission of 4 grid cells with resolution dx_dy_out will be combined in 1 FLEXPART release)
+    integer         :: ny_lat_out 
+    integer         :: nx_lon_out
+    !***********************************************************************
+    
+    !Output files
+    !***********************************************************************
+    character(len=256)     :: release
+    character(len=64)     :: summary_file_name
+    character(len=64)     :: nc_file_name
+    character(len=256)    :: summary_file
+    character(len=256)    :: nc_file_out
+    !***********************************************************************
+    !Input files/settings (HARD coded) recompile is require when parameters
+    !are adjusted
+    ! - Changed so that parameters such start date and duration of simulation
+    !   can be adjusted using a namelist COMAND file instead.
+    !***********************************************************************
     
     !Windfields and properties
     !***********************************************************************
@@ -93,34 +124,6 @@ module dust_mod
     real, parameter            :: xlon0_erC=-24.692251367597, ylat0_erC=63.299997666465
     real, parameter            :: dxdy_erC= 0.00028783387369149!degr
     integer, dimension(0:nx_erC-1,0:ny_erC-1):: erClass
-    !***********************************************************************
-           
-    !Output files/settings
-    !***********************************************************************
-    !output time frame
-    integer, parameter          :: start_date_day  = 20200417
-    integer, parameter          :: start_date_hour = 000000
-    integer, parameter          :: time_step	  = 3
-    real, parameter             :: releaseDays	  = 20
-    !***********************************************************************
-    
-    !output grid
-    !***********************************************************************
-    character(*),parameter      :: output_directory  = '/output/test/'
-    real, parameter             :: lat_bottom        = -90
-    real, parameter             :: lon_left          = 90
-    real, parameter             :: dx_dy_out         = 0.25  !resolution of emission calculation in degree, should be larger than resolution of global landuse file (15/3600)
-    integer, parameter          :: release_dxdy_step = 1    !Interval of x and y in which release file should be written 
-                                                            !(2 means that calculated emission of 4 grid cells with resolution dx_dy_out will be combined in 1 FLEXPART release)
-    integer, parameter          :: ny_lat_out        = 180/dx_dy_out!180/dx_dy_out!5/dx_dy_out
-    integer, parameter          :: nx_lon_out        = 360/dx_dy_out!360/dx_dy_out!14/dx_dy_out
-    !***********************************************************************
-    
-    !Output files
-    !***********************************************************************
-    character(*), parameter     :: release= 'RELEASES_FLEXDUST'
-    character(*), parameter     :: summary_file=output_directory//'Summary.txt'
-    character(*), parameter     :: nc_file_out=output_directory//'FLEXDUST_out.nc'
     !***********************************************************************
     
     !Switches output
