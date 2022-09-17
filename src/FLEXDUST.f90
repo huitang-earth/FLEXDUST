@@ -51,6 +51,7 @@ program FLEXDUST
     real,dimension(:,:), allocatable    :: emission_mass(:,:),emission_flux(:,:), soilMoisture(:,:), cum_emission(:,:)
     real,dimension(:,:), allocatable    :: emission_mass_step(:,:),emission_flux_step(:,:)
     real,dimension(:,:), allocatable    :: outputField(:,:), erodibility(:,:)
+    real,dimension(:,:), allocatable    :: sandMap(:,:), clayMap(:,:)
     real,dimension(:,:,:), allocatable  :: precipitation
     integer,dimension(:,:), allocatable :: inNestNr,  ix_wind_n, iy_wind_n, landcovertype
     integer,dimension(:), allocatable   :: ix_lu, iy_lu, ix_wind, iy_wind, ix_clay,  iy_clay, ix_erClass,  iy_erClass
@@ -66,6 +67,9 @@ program FLEXDUST
     
     !Set some variables used in the code to read files copied from FLEXPART
     !*************************************************************************************************
+    call readcommand
+    write(*,*) 'Reading Namelist Complete' 
+    
     numbnests           = numberOfNests   
     ldirect				= 1
     path(4) 			= ECMWF_input
@@ -76,6 +80,8 @@ program FLEXDUST
     start_date_available            = start_date	
     end_date			= start_date+releaseDays
     ideltas				= nint((end_date-start_date)*86400.)
+    nc_file_out         = trim(output_directory)//trim(nc_file_name)
+    summary_file    = trim(output_directory)//trim(summary_file_name)
     !*************************************************************************************************
 
     !Save settings dust_mod to output
@@ -132,6 +138,12 @@ program FLEXDUST
 
     allocate(erodibility(0:nx_lon_out-1,0:ny_lat_out-1), STAT=ALLOC_ERR)
     IF (ALLOC_ERR /= 0) STOP "*** Not enough memory ***"
+    
+    allocate(sandMap(0:nx_lon_out-1,0:ny_lat_out-1), STAT=ALLOC_ERR)
+    IF (ALLOC_ERR /= 0) STOP "*** Not enough memory ***"
+    
+    allocate(clayMap(0:nx_lon_out-1,0:ny_lat_out-1), STAT=ALLOC_ERR)
+    IF (ALLOC_ERR /= 0) STOP "*** Not enough memory ***"   
     
     allocate(soilMoisture(0:nx_lon_out-1,0:ny_lat_out-1), STAT=ALLOC_ERR)
     IF (ALLOC_ERR /= 0) STOP "*** Not enough memory ***"
@@ -328,14 +340,19 @@ program FLEXDUST
                     !********************************************************
                     precipitation(ix,iy,40)=lsprec(ix_wind(ix), iy_wind(iy),1,1)+convprec( ix_wind(ix), iy_wind(iy),1,1) !Large scale + convective precipitation in m
                     !********************************************************
-                    
+                    if(tot_sec.eq.0)then
+                        clayMap(ix,iy)=clayContent(ix_clay(ix),iy_clay(iy))
+                        sandMap(ix,iy)=sandContent(ix_clay(ix),iy_clay(iy))
+                    endif
                     !In first time step only determine erodibility at grid point if switched on
                     !********************************************************
                     if(tot_sec.eq.0 .and. EROSION_TOPO)then
                         !get lower left corner (ix_ll, iy_ll) of erosion area
-                        call getGridPointWind(lat_out-5., lon_out-5,dummy_int, ix_ll, iy_ll, dummy_int, dummy_int)
                         !get upper right corner (ix_ur, iy_ur) of erosion area
-                        call getGridPointWind(lat_out+5., lon_out+5.,dummy_int, ix_ur, iy_ur,dummy_int,dummy_int)
+                        !get lower left corner (ix_ll, iy_ll) of erosion area
+                        call getGridPointWind(lat_out-15., lon_out-15,dummy_int, ix_ll, iy_ll, dummy_int, dummy_int)
+                        !get upper right corner (ix_ur, iy_ur) of erosion area
+                        call getGridPointWind(lat_out+15., lon_out+15.,dummy_int, ix_ur, iy_ur,dummy_int,dummy_int)
                         !scale erodibility in this area
                         call getErodibility(erodibility(ix,iy), ix_wind(ix), iy_wind(iy), ix_ll, ix_ur, iy_ll, iy_ur)
                         
@@ -465,8 +482,11 @@ program FLEXDUST
                     !Initialize netcdf file
                     call netCDF_prepareEmission(nc_file_out, lons, lats)
                     !Save bare soil fraction in netcdf out
+                    call netCDF_write_grid(nc_file_out,"erodibility",erodibility_total)
                     call netCDF_write_grid(nc_file_out, "soil", soilFraction)
                     call netCDF_write_grid(nc_file_out, "area", gridarea)
+                    call netCDF_write_grid(nc_file_out, "sand", sandMap)
+                    call netCDF_write_grid(nc_file_out, "clay", clayMap)  
                 endif
                 timetesting(1)=tot_sec-(time_step-1)*3600
                 timetesting(2)=tot_sec+3600

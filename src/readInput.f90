@@ -300,7 +300,8 @@ subroutine readlanduse(inputFile, landinvent_loc, nx_lu, ny_lu, binaryFile)
         !Open bindary file (as was prepared in previous simulation by lines above)
         !******************************************
         print*, inputfile
-        open(unit = unitfile, file = inputFile, form = 'unformatted')
+        !open(unit = unitfile, file = inputFile, form = 'unformatted')
+        open(unit = unitfile, file = inputFile, form ='unformatted',status='unknown',action='read',access='stream')
         read(unitfile) tmp
         close(unitfile)
         !******************************************

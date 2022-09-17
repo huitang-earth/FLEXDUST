@@ -122,16 +122,17 @@ module par_mod
   !*********************************************
   
   !integer,parameter :: nxmax=361,nymax=181,nuvzmax=92,nwzmax=92,nzmax=92 !FNL XF
-  integer,parameter :: nxmax=361,nymax=181,nuvzmax=138,nwzmax=138,nzmax=138 !ECMWF 1.0 degr
+  !integer,parameter :: nxmax=361,nymax=181,nuvzmax=138,nwzmax=138,nzmax=138 !ECMWF 1.0 degr
   !integer,parameter :: nxmax=721,nymax=361,nuvzmax=138,nwzmax=138,nzmax=138 !ECMWF 0.5 degr
   !integer,parameter :: nxmax=361,nymax=181,nuvzmax=92,nwzmax=92,nzmax=92 !ECMWF
   !integer,parameter :: nxmax=361,nymax=181,nuvzmax=26,nwzmax=26,nzmax=26
   !integer,parameter :: nxmax=721,nymax=361,nuvzmax=64,nwzmax=64,nzmax=64
   !integer,parameter :: nxmax=1201,nymax=235,nuvzmax=58,nwzmax=58,nzmax=58
-
+  integer,parameter :: nxmax=501,nymax=234,nuvzmax=138,nwzmax=138,nzmax=138 !ECMWF ERA5,0.3 Asian domain
+  !integer,parameter :: nxmax=534,nymax=249,nuvzmax=138,nwzmax=138,nzmax=138 !ECMWF ERA5,0.27 new Asian domain
   !integer,parameter :: nxshift=718! for ECMWF 0.5 degr
-  integer,parameter :: nxshift=359! for ECMWF 1.0 degr
-  !integer,parameter :: nxshift=0     ! for GFS or FNL (XF)
+  !integer,parameter :: nxshift=359! for ECMWF 1.0 degr
+  integer,parameter :: nxshift=0     ! for GFS or FNL (XF)
 
   integer,parameter :: nconvlevmax = nuvzmax-1
   integer,parameter :: na = nconvlevmax+1
@@ -156,8 +157,8 @@ module par_mod
   ! Maximum dimensions of the nested input grids
   !*********************************************
 
-  !integer,parameter :: maxnests=0, nxmaxn=0, nymaxn=0
-  integer,parameter :: maxnests=1,nxmaxn=401,nymaxn=201 !ECMWF
+  integer,parameter :: maxnests=0, nxmaxn=0, nymaxn=0
+  !integer,parameter :: maxnests=1,nxmaxn=401,nymaxn=201 !ECMWF
   !integer,parameter :: maxnests=1, nxmaxn=201, nymaxn=161 ! FNL XF
   ! maxnests                maximum number of nested grids
   ! nxmaxn,nymaxn           maximum dimension of nested wind fields in
@@ -213,7 +214,7 @@ module par_mod
   ! ---------
   ! Sabine Eckhardt: change of landuse inventary numclass=13
   ! ---------
-  integer,parameter :: maxwf=50000, maxtable=1000, numclass=13, ni=11
+  integer,parameter :: maxwf=500000, maxtable=1000, numclass=13, ni=11
 
   ! maxwf                   maximum number of wind fields to be used for simulation
   ! maxtable                Maximum number of chemical species that can be

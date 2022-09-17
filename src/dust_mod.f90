@@ -26,36 +26,67 @@ module dust_mod
     
     !Input files/settings
     !***********************************************************************
+    !output time frame
+    integer :: start_date_day, start_date_hour, time_step	  
+    real    :: releaseDays	      
+    !***********************************************************************
+    
+    !output grid
+    !***********************************************************************
+
+    character(len=256)   :: output_directory
+    real           :: lat_bottom
+    real           :: lon_left 
+    real           :: dx_dy_out   !resolution of emission calculation in degree, should be larger than resolution of global landuse file (15/3600)
+    integer        :: release_dxdy_step = 1    !Interval of x and y in which release file should be written 
+                                                            !(2 means that calculated emission of 4 grid cells with resolution dx_dy_out will be combined in 1 FLEXPART release)
+    integer         :: ny_lat_out 
+    integer         :: nx_lon_out
+    !***********************************************************************
+    
+    !Output files
+    !***********************************************************************
+    character(len=256)     :: release
+    character(len=64)     :: summary_file_name
+    character(len=64)     :: nc_file_name
+    character(len=256)    :: summary_file
+    character(len=256)    :: nc_file_out
+    !***********************************************************************
+    !Input files/settings (HARD coded) recompile is require when parameters
+    !are adjusted
+    ! - Changed so that parameters such start date and duration of simulation
+    !   can be adjusted using a namelist COMAND file instead.
+    !***********************************************************************
     
     !Windfields and properties
     !***********************************************************************
   
-    character(*), parameter    :: ECMWF_input='/xnilu_wrk/flex_wrk/WIND_FIELDS/AVAILABLE_ECMWF_OPER_fields_global'
-    character(*), parameter    :: ECMWF_input_nest= '/home/christine/AVAILABLE_ECMWF_OPER_fields_05_global' !FLEXPART AVAILABLE file for nested wind field
+    character(*), parameter    :: ECMWF_input='/cluster/projects/nn2806k/huit/flexpart/AVAILABLE_WINDFIELDS_EA'
+    character(*), parameter    :: ECMWF_input_nest= '../AVAILABLE_WINDFIELDS' !FLEXPART AVAILABLE file for nested wind field
     integer, parameter         :: numberOfNests = 0 !Number of nested wind fields, if more than 1 remember to change path and length! NOT tested....
     integer, parameter         :: time_step_wind = 3 !time step wind fields in hours, default 3
     !***********************************************************************
    
     !properties of the clayContent & sand file
-    !***********************************************************************
+    !************************ src/dust_mod.f90***********************************************
 
-    !for default version
-    logical, parameter         :: ISRIC_soilmaps=.false.
-    character(*), parameter    :: clayFile= '../INPUT/Clay.srf'        !File with clay content
-    character(*), parameter    :: sandFile= '../INPUT/Sand.srf'        !File with sand content
-    real, parameter            :: dx_c= 0.0833, dy_c=0.0833         !Resolution sand/clay grids
-    real, parameter            :: xlon0_c= -180.00, ylat0_c=-56.50  !Lower left corner of clay/sand grids
-    integer,parameter          :: nx_c=4320 , ny_c=1686             !Size sand/clay grids
-    real, dimension(0:nx_c-1,0:ny_c-1) :: clayContent, sandContent  !Sand and clay should be equal grids!!!
-    
-    !for alternative ISRIC version, not validated
+    !for default version (old version based on soil types)
     !logical, parameter         :: ISRIC_soilmaps=.true.
-    !character(*), parameter    :: clayFile= '../INPUT/ISRIC_clay.bin'        !File with clay content
-    !character(*), parameter    :: sandFile= '../INPUT/ISRIC_sand.bin'        !File with sand content
-    !real, parameter            :: dx_c= 0.05, dy_c=0.05         !Resolution sand/clay grids
-    !real, parameter            :: xlon0_c= -180.0, ylat0_c=-55.98  !Lower left corner of clay/sand grids
-    !integer,parameter          :: nx_c=7200 , ny_c=2774             !Size sand/clay grids
+    !character(*), parameter    :: clayFile= '../INPUT/Clay.srf'        !File with clay content
+    !character(*), parameter    :: sandFile= '../INPUT/Sand.srf'        !File with sand content
+    !real, parameter            :: dx_c= 0.0833, dy_c=0.0833         !Resolution sand/clay grids
+    !real, parameter            :: xlon0_c= -180.00, ylat0_c=-56.50  !Lower left corner of clay/sand grids
+    !integer,parameter          :: nx_c=4320 , ny_c=1686             !Size sand/clay grids
     !real, dimension(0:nx_c-1,0:ny_c-1) :: clayContent, sandContent  !Sand and clay should be equal grids!!!
+    
+    !for alternative ISRIC version (new version, 3 min resolution), not validated
+    logical, parameter         :: ISRIC_soilmaps=.true.
+    character(*), parameter    :: clayFile= '../INPUT/ISRIC_clay.bin'        !File with clay content
+    character(*), parameter    :: sandFile= '../INPUT/ISRIC_sand.bin'        !File with sand content
+    real, parameter            :: dx_c= 0.05, dy_c=0.05         !Resolution sand/clay grids
+    real, parameter            :: xlon0_c= -180.0, ylat0_c=-55.98  !Lower left corner of clay/sand grids
+    integer,parameter          :: nx_c=7200 , ny_c=2774             !Size sand/clay grids
+    real, dimension(0:nx_c-1,0:ny_c-1) :: clayContent, sandContent  !Sand and clay should be equal grids!!!
 
     !***********************************************************************
     
@@ -63,14 +94,14 @@ module dust_mod
     !***********************************************************************
     integer, parameter         :: landuse_file_type=2               !1>same as flexpart 2>MODIS
     logical, parameter         :: landuse_binary=.true.             !Is the landuse file already converted from ASCII to binary file?
-    character(*), parameter    :: landuse_file= '../INPUT/landcover_GLCNMO_l.bin'
+    character(*), parameter    :: landuse_file= '/cluster/projects/nn2806k/huit/flexpart/INPUT/GLCNMO_v3.bin'
     integer, parameter         :: nx_landuse=86400, ny_landuse=43200 !Size landuse file
     real, parameter            :: dxdy_degr_landuse=15./3600.        !Resolution landuse file
     !***********************************************************************
     
     !Nested landuse file and properties
     !***********************************************************************
-    integer, parameter         :: numbnests_landuse=1   !Developed and tested for only 1 nested field (sandy deserts Iceland or Antarctic), 
+    integer, parameter         :: numbnests_landuse=0   !Developed and tested for only 1 nested field (sandy deserts Iceland or Antarctic), 
                                                         !requires further changes in the source code if other fields are used! 
                                                         !(Adjust code for bare land and possibly soil fraction calculation.)
     
@@ -94,34 +125,6 @@ module dust_mod
     real, parameter            :: dxdy_erC= 0.00028783387369149!degr
     integer, dimension(0:nx_erC-1,0:ny_erC-1):: erClass
     !***********************************************************************
-           
-    !Output files/settings
-    !***********************************************************************
-    !output time frame
-    integer, parameter          :: start_date_day  = 20200417
-    integer, parameter          :: start_date_hour = 000000
-    integer, parameter          :: time_step	  = 3
-    real, parameter             :: releaseDays	  = 20
-    !***********************************************************************
-    
-    !output grid
-    !***********************************************************************
-    character(*),parameter      :: output_directory  = '/output/test/'
-    real, parameter             :: lat_bottom        = -90
-    real, parameter             :: lon_left          = 90
-    real, parameter             :: dx_dy_out         = 0.25  !resolution of emission calculation in degree, should be larger than resolution of global landuse file (15/3600)
-    integer, parameter          :: release_dxdy_step = 1    !Interval of x and y in which release file should be written 
-                                                            !(2 means that calculated emission of 4 grid cells with resolution dx_dy_out will be combined in 1 FLEXPART release)
-    integer, parameter          :: ny_lat_out        = 180/dx_dy_out!180/dx_dy_out!5/dx_dy_out
-    integer, parameter          :: nx_lon_out        = 360/dx_dy_out!360/dx_dy_out!14/dx_dy_out
-    !***********************************************************************
-    
-    !Output files
-    !***********************************************************************
-    character(*), parameter     :: release= 'RELEASES_FLEXDUST'
-    character(*), parameter     :: summary_file=output_directory//'Summary.txt'
-    character(*), parameter     :: nc_file_out=output_directory//'FLEXDUST_out.nc'
-    !***********************************************************************
     
     !Switches output
     !***********************************************************************
@@ -132,7 +135,7 @@ module dust_mod
     
     !Model parameters
     !***********************************************************************
-    real, parameter             :: mobThreshold = 0.3        !Default mobilization threshold should be wind speed or friction velocity, depending on choice "emissionModel", default should be 0.3 for emissionModel 2
+    real, parameter             :: mobThreshold = 0.3        !Default mobilization threshold should be wind speed or friction velocity, depending on choice "emissionModel", default should be 0.3 for emissionModel 1
     real, parameter             :: particlesPerTonDust = 0.8 !Number of particles to be released per ton of dust, adjust with resolution
     integer, parameter          :: typeSizeDistr=3           !Use size distribution as in DustBowl-Sodemann et al.2015 (1), or similar to Kok 2011 (2 & 3) with many small particles in 3
     integer, parameter          :: Junge_index = 0           !only for typeSizeDistr 1
