@@ -147,7 +147,7 @@ module dust_mod
     
     !Switches model
     !***********************************************************************
-    logical, parameter          :: OBSTACLES=.true.          !Influence on roughness length by obstables?
+    logical, parameter          :: OBSTACLES=.false.          !Influence on roughness length by obstables?
     logical, parameter          :: EROSION_TOPO=.true.       !Add erodibility depending on topography acc. to Ginoux et al., 2001?
     logical, parameter          :: PRECIP_BLOCK=.false.      !Block dust emission in case of precipitation?
     logical, parameter          :: SOILMOISTURE_DEP=.true.   !Should threshold friction velocity increase with soil moisture?
