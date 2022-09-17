@@ -136,7 +136,7 @@ module dust_mod
     !Model parameters
     !***********************************************************************
     real, parameter             :: mobThreshold = 0.3        !Default mobilization threshold should be wind speed or friction velocity, depending on choice "emissionModel", default should be 0.3 for emissionModel 1
-    real, parameter             :: particlesPerTonDust = 0.8 !Number of particles to be released per ton of dust, adjust with resolution
+    real, parameter             :: particlesPerTonDust = 0.4 !Number of particles to be released per ton of dust, adjust with resolution
     integer, parameter          :: typeSizeDistr=3           !Use size distribution as in DustBowl-Sodemann et al.2015 (1), or similar to Kok 2011 (2 & 3) with many small particles in 3
     integer, parameter          :: Junge_index = 0           !only for typeSizeDistr 1
     real*8, parameter           :: scalingFactor = 4.8e-4    !Default value 4.8e-4 for emissionModel 2
