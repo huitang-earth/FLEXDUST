@@ -176,7 +176,7 @@ subroutine getSoilFromLU(soilFraction, landinventory_global, landinventory_n, in
                         !bare land - gravel/rock
                         gridSum = gridSum + 0.4 !Partly erodible, topography to identify rock
 
-                    else if (landinventory_global(i, j) .eq. 10)then
+                    else if ((landinventory_global(i, j) .eq. 10) .or. (landinventory_global(i, j) .eq. 8) .or. (landinventory_global(i, j) .eq. 9) .or. (landinventory_global(i, j) .eq. 11) .or. (landinventory_global(i, j) .eq. 13) ) then
                         !sparse vegetation, get vegetation fraction from ECWMF but due to lower resolution only allow a vegetation cover between 10 and 90%
                         if (useVEG2010)then
                             !Not available in wind field, get from fixed file
