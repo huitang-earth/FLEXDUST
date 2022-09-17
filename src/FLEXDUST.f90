@@ -348,9 +348,11 @@ program FLEXDUST
                     !********************************************************
                     if(tot_sec.eq.0 .and. EROSION_TOPO)then
                         !get lower left corner (ix_ll, iy_ll) of erosion area
-                        call getGridPointWind(lat_out-5., lon_out-5,dummy_int, ix_ll, iy_ll, dummy_int, dummy_int)
                         !get upper right corner (ix_ur, iy_ur) of erosion area
-                        call getGridPointWind(lat_out+5., lon_out+5.,dummy_int, ix_ur, iy_ur,dummy_int,dummy_int)
+                        !get lower left corner (ix_ll, iy_ll) of erosion area
+                        call getGridPointWind(lat_out-15., lon_out-15,dummy_int, ix_ll, iy_ll, dummy_int, dummy_int)
+                        !get upper right corner (ix_ur, iy_ur) of erosion area
+                        call getGridPointWind(lat_out+15., lon_out+15.,dummy_int, ix_ur, iy_ur,dummy_int,dummy_int)
                         !scale erodibility in this area
                         call getErodibility(erodibility(ix,iy), ix_wind(ix), iy_wind(iy), ix_ll, ix_ur, iy_ll, iy_ur)
                         
