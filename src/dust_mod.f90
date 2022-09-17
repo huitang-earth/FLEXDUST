@@ -30,8 +30,8 @@ module dust_mod
     !Windfields and properties
     !***********************************************************************
   
-    character(*), parameter    :: ECMWF_input='/xnilu_wrk/flex_wrk/WIND_FIELDS/AVAILABLE_ECMWF_OPER_fields_global'
-    character(*), parameter    :: ECMWF_input_nest= '/home/christine/AVAILABLE_ECMWF_OPER_fields_05_global' !FLEXPART AVAILABLE file for nested wind field
+    character(*), parameter    :: ECMWF_input='/cluster/projects/nn2806k/huit/flexpart/AVAILABLE_WINDFIELDS_EA'
+    character(*), parameter    :: ECMWF_input_nest= '../AVAILABLE_WINDFIELDS' !FLEXPART AVAILABLE file for nested wind field
     integer, parameter         :: numberOfNests = 0 !Number of nested wind fields, if more than 1 remember to change path and length! NOT tested....
     integer, parameter         :: time_step_wind = 3 !time step wind fields in hours, default 3
     !***********************************************************************
