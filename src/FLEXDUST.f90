@@ -354,36 +354,36 @@ program FLEXDUST
                         erodibility_total(ix,iy)=0
                         
                         !get lower left corner (ix_ll, iy_ll) of erosion area
-                        call getGridPointWind(lat_out-2., lon_out-2,dummy_int, ix_ll, iy_ll, dummy_int, dummy_int)
+                        call getGridPointWind(lat_out-0.6, lon_out-0.6,dummy_int, ix_ll, iy_ll, dummy_int, dummy_int)
                         !get upper right corner (ix_ur, iy_ur) of erosion area
-                        call getGridPointWind(lat_out+2., lon_out+2.,dummy_int, ix_ur, iy_ur,dummy_int,dummy_int)
+                        call getGridPointWind(lat_out+0.6, lon_out+0.6,dummy_int, ix_ur, iy_ur,dummy_int,dummy_int)
                         !scale erodibility in this area
                         call getErodibility(erodibility(ix,iy), ix_wind(ix), iy_wind(iy), ix_ll, ix_ur, iy_ll, iy_ur)
                         
                         erodibility_total(ix,iy)=erodibility_total(ix,iy)+erodibility(ix,iy)
                         
                         !get lower left corner (ix_ll, iy_ll) of erosion area
-                        call getGridPointWind(lat_out-5., lon_out-5,dummy_int, ix_ll, iy_ll, dummy_int, dummy_int)
+                        call getGridPointWind(lat_out-1.5, lon_out-1.5,dummy_int, ix_ll, iy_ll, dummy_int, dummy_int)
                         !get upper right corner (ix_ur, iy_ur) of erosion area
-                        call getGridPointWind(lat_out+5., lon_out+5.,dummy_int, ix_ur, iy_ur,dummy_int,dummy_int)
+                        call getGridPointWind(lat_out+1.5, lon_out+1.5,dummy_int, ix_ur, iy_ur,dummy_int,dummy_int)
                         !scale erodibility in this area
                         call getErodibility(erodibility(ix,iy), ix_wind(ix), iy_wind(iy), ix_ll, ix_ur, iy_ll, iy_ur)
                         
                         erodibility_total(ix,iy)=erodibility_total(ix,iy)+erodibility(ix,iy)
                         
                         !get lower left corner (ix_ll, iy_ll) of erosion area
-                        call getGridPointWind(lat_out-10., lon_out-10,dummy_int, ix_ll, iy_ll, dummy_int, dummy_int)
+                        call getGridPointWind(lat_out-3, lon_out-3,dummy_int, ix_ll, iy_ll, dummy_int, dummy_int)
                         !get upper right corner (ix_ur, iy_ur) of erosion area
-                        call getGridPointWind(lat_out+10., lon_out+10.,dummy_int, ix_ur, iy_ur,dummy_int,dummy_int)
+                        call getGridPointWind(lat_out+3, lon_out+3,dummy_int, ix_ur, iy_ur,dummy_int,dummy_int)
                         !scale erodibility in this area
                         call getErodibility(erodibility(ix,iy), ix_wind(ix), iy_wind(iy), ix_ll, ix_ur, iy_ll, iy_ur)
                         
                         erodibility_total(ix,iy)=erodibility_total(ix,iy)+erodibility(ix,iy)
                         
                         !get lower left corner (ix_ll, iy_ll) of erosion area
-                        call getGridPointWind(lat_out-15., lon_out-15,dummy_int, ix_ll, iy_ll, dummy_int, dummy_int)
+                        call getGridPointWind(lat_out-4.5, lon_out-4.5,dummy_int, ix_ll, iy_ll, dummy_int, dummy_int)
                         !get upper right corner (ix_ur, iy_ur) of erosion area
-                        call getGridPointWind(lat_out+15., lon_out+15.,dummy_int, ix_ur, iy_ur,dummy_int,dummy_int)
+                        call getGridPointWind(lat_out+4.5, lon_out+4.5,dummy_int, ix_ur, iy_ur,dummy_int,dummy_int)
                         !scale erodibility in this area
                         call getErodibility(erodibility(ix,iy), ix_wind(ix), iy_wind(iy), ix_ll, ix_ur, iy_ll, iy_ur)
                         
