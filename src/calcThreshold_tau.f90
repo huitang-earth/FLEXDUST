@@ -29,7 +29,7 @@ subroutine calcThreshold_tau(frictVelThres, shearStressThres, inClay, clayCont_l
     real :: precipMem(1:40)
     real :: f_d, soilFract, tmp_1, tmp_2, z0s, z0m
     real :: w, w_acc, rho_air, Diam_p, precip
-    real, parameter :: gamma_shao = 2.9e-4, An = 0.111
+    real, parameter :: gamma_shao = 2.9e-4, An = 0.05  !An = 0.111
     real, parameter :: rho_p = 2500
     logical :: inClay, inErC
     !********************************************************************************* 

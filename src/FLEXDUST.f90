@@ -50,7 +50,7 @@ program FLEXDUST
     real,dimension(:,:), allocatable    :: gridarea(:,:)
     real,dimension(:,:), allocatable    :: emission_mass(:,:),emission_flux(:,:), soilMoisture(:,:), cum_emission(:,:)
     real,dimension(:,:), allocatable    :: emission_mass_step(:,:),emission_flux_step(:,:)
-    real,dimension(:,:), allocatable    :: outputField(:,:), erodibility(:,:)
+    real,dimension(:,:), allocatable    :: outputField(:,:), erodibility(:,:), erodibility_total(:,:)
     real,dimension(:,:), allocatable    :: sandMap(:,:), clayMap(:,:)
     real,dimension(:,:,:), allocatable  :: precipitation
     integer,dimension(:,:), allocatable :: inNestNr,  ix_wind_n, iy_wind_n, landcovertype
@@ -139,6 +139,9 @@ program FLEXDUST
     allocate(erodibility(0:nx_lon_out-1,0:ny_lat_out-1), STAT=ALLOC_ERR)
     IF (ALLOC_ERR /= 0) STOP "*** Not enough memory ***"
     
+    allocate(erodibility_total(0:nx_lon_out-1,0:ny_lat_out-1), STAT=ALLOC_ERR)
+    IF (ALLOC_ERR /= 0) STOP "*** Not enough memory ***"
+
     allocate(sandMap(0:nx_lon_out-1,0:ny_lat_out-1), STAT=ALLOC_ERR)
     IF (ALLOC_ERR /= 0) STOP "*** Not enough memory ***"
     
@@ -347,16 +350,48 @@ program FLEXDUST
                     !In first time step only determine erodibility at grid point if switched on
                     !********************************************************
                     if(tot_sec.eq.0 .and. EROSION_TOPO)then
+                        
+                        erodibility_total(ix,iy)=0
+                        
                         !get lower left corner (ix_ll, iy_ll) of erosion area
+                        call getGridPointWind(lat_out-0.6, lon_out-0.6,dummy_int, ix_ll, iy_ll, dummy_int, dummy_int)
                         !get upper right corner (ix_ur, iy_ur) of erosion area
-                        !get lower left corner (ix_ll, iy_ll) of erosion area
-                        call getGridPointWind(lat_out-15., lon_out-15,dummy_int, ix_ll, iy_ll, dummy_int, dummy_int)
-                        !get upper right corner (ix_ur, iy_ur) of erosion area
-                        call getGridPointWind(lat_out+15., lon_out+15.,dummy_int, ix_ur, iy_ur,dummy_int,dummy_int)
+                        call getGridPointWind(lat_out+0.6, lon_out+0.6,dummy_int, ix_ur, iy_ur,dummy_int,dummy_int)
                         !scale erodibility in this area
                         call getErodibility(erodibility(ix,iy), ix_wind(ix), iy_wind(iy), ix_ll, ix_ur, iy_ll, iy_ur)
                         
-                        soilFraction(ix,iy)=soilFraction(ix,iy)*erodibility(ix,iy)
+                        erodibility_total(ix,iy)=erodibility_total(ix,iy)+erodibility(ix,iy)
+                        
+                        !get lower left corner (ix_ll, iy_ll) of erosion area
+                        call getGridPointWind(lat_out-1.5, lon_out-1.5,dummy_int, ix_ll, iy_ll, dummy_int, dummy_int)
+                        !get upper right corner (ix_ur, iy_ur) of erosion area
+                        call getGridPointWind(lat_out+1.5, lon_out+1.5,dummy_int, ix_ur, iy_ur,dummy_int,dummy_int)
+                        !scale erodibility in this area
+                        call getErodibility(erodibility(ix,iy), ix_wind(ix), iy_wind(iy), ix_ll, ix_ur, iy_ll, iy_ur)
+                        
+                        erodibility_total(ix,iy)=erodibility_total(ix,iy)+erodibility(ix,iy)
+                        
+                        !get lower left corner (ix_ll, iy_ll) of erosion area
+                        call getGridPointWind(lat_out-3, lon_out-3,dummy_int, ix_ll, iy_ll, dummy_int, dummy_int)
+                        !get upper right corner (ix_ur, iy_ur) of erosion area
+                        call getGridPointWind(lat_out+3, lon_out+3,dummy_int, ix_ur, iy_ur,dummy_int,dummy_int)
+                        !scale erodibility in this area
+                        call getErodibility(erodibility(ix,iy), ix_wind(ix), iy_wind(iy), ix_ll, ix_ur, iy_ll, iy_ur)
+                        
+                        erodibility_total(ix,iy)=erodibility_total(ix,iy)+erodibility(ix,iy)
+                        
+                        !get lower left corner (ix_ll, iy_ll) of erosion area
+                        call getGridPointWind(lat_out-4.5, lon_out-4.5,dummy_int, ix_ll, iy_ll, dummy_int, dummy_int)
+                        !get upper right corner (ix_ur, iy_ur) of erosion area
+                        call getGridPointWind(lat_out+4.5, lon_out+4.5,dummy_int, ix_ur, iy_ur,dummy_int,dummy_int)
+                        !scale erodibility in this area
+                        call getErodibility(erodibility(ix,iy), ix_wind(ix), iy_wind(iy), ix_ll, ix_ur, iy_ll, iy_ur)
+                        
+                        erodibility_total(ix,iy)=erodibility_total(ix,iy)+erodibility(ix,iy)
+                        
+                        erodibility_total(ix,iy)=erodibility_total(ix,iy)/4
+                        
+                        soilFraction(ix,iy)=soilFraction(ix,iy)*erodibility_total(ix,iy)
 
                         !Store soil fraction grid when finished > now only save in netcdf
                         !if(iy.eq.ny_lat_out-1 .and. ix.eq.nx_lon_out-1)then
@@ -437,8 +472,9 @@ program FLEXDUST
                                     !*****************************
                                     call dustEmmission_Kok14(emission_mass_step(ix,iy), soilFraction(ix,iy), &
                                     lat_out, dx_dy_out, inNestNr(ix,iy),  ix_wind(ix), iy_wind(iy), &
-                                    ix_wind_n(ix,inNestNr(ix,iy)), iy_wind_n(iy,inNestNr(ix,iy)),emission_time, &
-                                    frictVelThres, inClayGrid(ix,iy), clayContent(ix_clay(ix),iy_clay(iy)))
+                                    ix_wind_n(ix,inNestNr(ix,iy)), iy_wind_n(iy,inNestNr(ix,iy)),emission_time, scalingFactor, &
+                                    frictVelThres, inClayGrid(ix,iy), clayContent(ix_clay(ix),iy_clay(iy)), & 
+                                    emission_flux_step(ix,iy), gridarea(ix,iy))
                                 endif
                                 !*****************************
                             endif!emission model with varying threshold

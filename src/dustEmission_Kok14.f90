@@ -18,15 +18,17 @@
 ! along with FLEXDUST.  If not, see <http://www.gnu.org/licenses/>.   *
 !**********************************************************************
 
-subroutine dustEmmission_Kok14(em, soilF, lat,dxdy_degr, inNestNr, ix_wind, iy_wind, ix_wind_n, iy_wind_n,&
-                                time_int,mobilisationThreshold,inClay, f_clay_tmp)
+subroutine dustEmmission_Kok14(em_mass, soilF, lat,dxdy_degr, inNestNr, ix_wind, iy_wind, ix_wind_n, iy_wind_n, &
+                                time_int, scalingFactor, mobilisationThreshold,inClay, f_clay_tmp, em_flux, &
+                                gridarea)
 
     use par_mod
     use com_mod
 
     implicit none
 
-    real     :: mfac, em, lat, mass, mobilisationThreshold, dxdy_degr
+    real     :: mfac, em_mass, em_flux, lat, mass, mobilisationThreshold, dxdy_degr
+    real*8   :: scalingFactor
     real     :: soilF
     real     :: u_star_local, rho_air, flux
     integer  :: ix_wind, iy_wind, ix_wind_n, iy_wind_n, time_int, inNestNr
@@ -35,7 +37,7 @@ subroutine dustEmmission_Kok14(em, soilF, lat,dxdy_degr, inNestNr, ix_wind, iy_w
     real, parameter :: C_e=2.0
     real, parameter :: rho_air_0=1.225
     real, parameter :: u_star_st_0=0.16
-    real :: f_clay, f_clay_tmp, C_d, tmp, f_bare, u_star_st, u_star_t
+    real :: f_clay, f_clay_tmp, C_d, tmp, f_bare, u_star_st, u_star_t, gridarea
     logical ::inClay
 
         !Get friction velocity
@@ -65,22 +67,22 @@ subroutine dustEmmission_Kok14(em, soilF, lat,dxdy_degr, inNestNr, ix_wind, iy_w
         
        
         !******************************************************************
-        !Calculate emitted mass (em) per time step if the threshold for saltation is exceeded
+        !Calculate emitted mass (em_mass) per time step if the threshold for saltation is exceeded
         !******************************************************************	
 	if(u_star_local.ge.u_star_t)then	
 		
 		!multiplication factor accounting for time step, area and conversion to kg
 		!**********************************************************
-		mfac=3600.0*time_int*dxdy_degr*111.0e3*&
-				dxdy_degr*cos(pi/180.0*lat)*111.0e3	
+		mfac=3600.0*time_int*gridarea	
 				
 		!Emitted mass in kg when mfac is used (otherwise mass flux in kg m-2 s-1)
                 tmp=C_alpha*(u_star_st-u_star_st_0)/u_star_st_0
-                flux=C_d*f_bare*f_clay*(rho_air*(u_star_local*u_star_local-u_star_t*u_star_t))/u_star_st &
+                flux=scalingFactor*C_d*f_bare*f_clay*(rho_air*(u_star_local*u_star_local-u_star_t*u_star_t))/u_star_st &
                         *((u_star_local/u_star_t)**tmp)
                 mass=flux*mfac
                        
-               em=em+mass
+               em_mass=em_mass+mass
+               em_flux=em_flux+flux*3600.*time_int !kg/m2
                
 	endif
         
