@@ -139,8 +139,8 @@ module dust_mod
     real, parameter             :: particlesPerTonDust = 0.4 !Number of particles to be released per ton of dust, adjust with resolution
     integer, parameter          :: typeSizeDistr=3           !Use size distribution as in DustBowl-Sodemann et al.2015 (1), or similar to Kok 2011 (2 & 3) with many small particles in 3
     integer, parameter          :: Junge_index = 0           !only for typeSizeDistr 1
-    real*8, parameter           :: scalingFactor = 4.8e-4    !Default value 4.8e-4 for emissionModel 2
-    integer, parameter          :: emissionModel = 2         !Choose from several emission Models (1: HSO, 2:MB95, 3:Kok et al. 2014), default and tested: 2. Options 1 and 3 may currently not be up to date with other changes in the model
+    real*8, parameter           :: scalingFactor = 4.8e-3    !Default value 4.8e-4 for emissionModel 2
+    integer, parameter          :: emissionModel = 3         !Choose from several emission Models (1: HSO, 2:MB95, 3:Kok et al. 2014), default and tested: 2. Options 1 and 3 may currently not be up to date with other changes in the model
     real, parameter             :: snowLimit =0.02           !From which snow amount should mobilization not be possible?
     real, parameter             :: minMassWrite=11.0         !Minimum emission (kg) for which to write a release > change depending on wanted resolution
     !***********************************************************************
